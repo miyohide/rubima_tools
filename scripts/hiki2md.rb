@@ -25,8 +25,11 @@ ARGV.each do |filename|
 
   # 最初の行にはタイトルが入っているものと仮定
   first_line = lines.shift.chomp
+
+  dirname = File.dirname(filename)
+  basename = File.basename(filename)
   # ファイル名の命名規則。最初の4文字は発行した号
-  issue_num = filename[0, 4]
+  issue_num = basename[0, 4]
 
   # Jekyll用のヘッダ
   headers = [ "---\n",
@@ -48,6 +51,6 @@ ARGV.each do |filename|
   headers.concat(body)
 
   # Markdownファイルとして出力
-  md_filename = ISSUE_DATE[issue_num] + "-" + filename.sub(/\.hiki$/, '.md')
+  md_filename = File.join(dirname, ISSUE_DATE[issue_num] + "-" + basename.sub(/\.hiki$/, '.md'))
   open(md_filename, 'w') { |f| f.write(headers.join) }
 end
