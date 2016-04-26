@@ -1,3 +1,18 @@
+def convert_footnote(body)
+  footnote_counter = 0
+  footnotes = []
+
+  body = body.map do |line|
+    line.gsub(/{{fn\(\'(.+?)\'\)}}/) do
+      footnote_counter += 1
+      footnotes << "[^#{footnote_counter}]: #{$1}"
+      "[^#{footnote_counter}]"
+    end
+  end
+
+  body.concat(footnotes)
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10",
   "0002" => "2004-10-16",
@@ -42,12 +57,13 @@ ARGV.each do |filename|
   body = lines.map { |line|
     line.sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
     sub(/^(\*)\s/) { '-'*($1.length) + ' ' }.
-    sub(/^\"\"\s/) { '> ' }.
+    sub(/^\"\"/) { '> ' }.
     sub(/^:([^:]+):(.+)$/) { '<dl><dt>' + $1 + '</dt><dd>' + $2 + '</dd></dl>' }.
     gsub(/\[\[([^|]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }.
     gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
   }
 
+  body = convert_footnote(body)
   headers.concat(body)
 
   # Markdownファイルとして出力
