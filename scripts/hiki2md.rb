@@ -73,8 +73,8 @@ ARGV.each do |filename|
     gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
   }
 
-  body = convert_footnote(body)
   body = convert_definition(body)
+  body = convert_footnote(body)
   headers.concat(body)
 
   # Markdownファイルとして出力
