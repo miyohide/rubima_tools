@@ -5,12 +5,25 @@ def convert_footnote(body)
   body = body.map do |line|
     line.gsub(/{{fn\(\'(.+?)\'\)}}/) do
       footnote_counter += 1
-      footnotes << "[^#{footnote_counter}]: #{$1}"
-      "[^#{footnote_counter}] "
+      footnotes << footnote_body(footnote_counter, $1)
+      "#{footnote_link(footnote_counter)}"
     end
   end
 
+  unless footnotes.nil?
+    footnotes.unshift "<div =class'footnotes'><ol>"
+    footnotes.push "</ol></div>"
+  end
+
   body.concat(footnotes)
+end
+
+def footnote_link(counter)
+  "<sup id='fnref#{counter}'><a href='\#fn#{counter}' rel='footnote'>#{counter}</a></sup>"
+end
+
+def footnote_body(counter, body)
+  "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>"
 end
 
 def convert_definition(body)
