@@ -1,3 +1,11 @@
+def convert_images(body, filename)
+  image_dir = '{{site.baseurl}}/images/' + filename.sub("\.hiki", "") + '/'
+
+  body.map do |line|
+    line.gsub(/\{\{attach_view\('(.+)'\)\}\}/) { "<img src='#{image_dir}#{$1}' alt='#{$1}'></img>" }
+  end
+end
+
 def convert_footnote(body)
   footnote_counter = 0
   footnotes = []
@@ -86,6 +94,7 @@ ARGV.each do |filename|
     gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
   }
 
+  body = convert_images(body, basename)
   body = convert_definition(body)
   body = convert_footnote(body)
   headers.concat(body)
