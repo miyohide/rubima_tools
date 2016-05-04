@@ -78,6 +78,10 @@ ARGV.each do |filename|
   # ファイル名の命名規則。最初の4文字は発行した号
   issue_num = basename[0, 4]
 
+  if basename == "#{issue_num}.hiki"
+    basename = "#{issue_num}-index.hiki"
+  end
+
   # Jekyll用のヘッダ
   headers = [ "---\n",
     "layout: post\n",
