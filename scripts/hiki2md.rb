@@ -2,7 +2,17 @@ def convert_images(body, filename)
   image_dir = '{{site.baseurl}}/images/' + filename.sub("\.hiki", "") + '/'
 
   body.map do |line|
-    line.gsub(/\{\{attach_view\('(.+)'\)\}\}/) { "<img src='#{image_dir}#{$1}' alt='#{$1}'></img>" }
+    line.gsub(/\{\{attach_view\('(.+)'\)\}\}/) do
+      image_tag(image_dir, $1)
+    end
+  end
+end
+
+def image_tag(image_dir_name, image_file_name)
+  if image_file_name =~ /u26\.gif/
+    "<img src='{{site.baseurl}}/images/title_mark.gif' alt='title mark'></img>"
+  else
+    "<img src='#{image_dir_name}#{image_file_name}' alt='#{image_file_name}'></img>"
   end
 end
 
