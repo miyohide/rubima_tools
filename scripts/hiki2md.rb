@@ -55,6 +55,26 @@ def convert_definition(body)
   end
 end
 
+def convert_table(body)
+  table_start = false
+
+  body.map do |line|
+    if line =~ /\A\|\|/
+      line = line.chomp + "|\n"
+      col_num = line.scan(/\|\|([^\|]+)/).size
+      line.gsub!(/\|\|/, '|')
+      unless table_start
+        table_start = true
+        line = "\n" + line + "|---" * col_num + "|\n"
+      end
+      line
+    else
+      table_start = false
+      line
+    end
+  end
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10",
   "0002" => "2004-10-16",
@@ -111,6 +131,7 @@ ARGV.each do |filename|
   body = convert_images(body, basename)
   body = convert_definition(body)
   body = convert_footnote(body)
+  body = convert_table(body)
   headers.concat(body)
 
   # Markdownファイルとして出力
