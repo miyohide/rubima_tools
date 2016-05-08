@@ -77,7 +77,7 @@ end
 
 def convert_link(body)
   body.map do |line|
-    line.gsub(/\[\[([^|]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
+    line.gsub(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
   end
 end
 
