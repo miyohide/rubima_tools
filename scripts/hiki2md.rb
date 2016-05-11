@@ -79,6 +79,7 @@ def convert_link(body)
   body.map do |line|
     # RAA対応
     line.gsub(/\[\[RAA:([^\]]+)\]\]/) { '[RAA:' + $1 + '](http://raa.ruby-lang.org/project/' + $1 + ')'}.
+    gsub(/\[\[ruby\-list:(\d+)\]\]/) {'[ruby-list:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/' + $1 + ')'}.
     gsub(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
   end
 end
