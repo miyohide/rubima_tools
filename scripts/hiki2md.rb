@@ -1,3 +1,5 @@
+require "uri"
+
 def convert_images(body, filename)
   image_dir = '{{site.baseurl}}/images/' + filename.sub("\.hiki", "") + '/'
 
@@ -80,6 +82,7 @@ def convert_link(body)
     # RAA対応
     line.gsub(/\[\[RAA:([^\]]+)\]\]/) { '[RAA:' + $1 + '](http://raa.ruby-lang.org/project/' + $1 + ')'}.
     gsub(/\[\[ruby\-list:(\d+)\]\]/) {'[ruby-list:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/' + $1 + ')'}.
+    gsub(/\[\[RWiki:([^\]]+)\]\]/) { '[RWiki:' + $1 + '](http://pub.cozmixng.org/~the-rwiki/rw-cgi.rb?cmd=view;name=' + URI.encode_www_form_component($1.encode("EUC-JP")) + ')' }.
     gsub(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
   end
 end
