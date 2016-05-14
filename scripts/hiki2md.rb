@@ -87,6 +87,12 @@ def convert_link(body)
   end
 end
 
+def convert_quote(body)
+  body.map do |line|
+    line.sub(/^\"\"/) { '> ' }
+  end
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10",
   "0002" => "2004-10-16",
@@ -135,11 +141,11 @@ ARGV.each do |filename|
   body = lines.map { |line|
     line.sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
     sub(/^(\*+)\s/) { ' '*($1.length - 1) + '- ' }.
-    sub(/^\"\"/) { '> ' }.
     gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
   }
 
   body = convert_link(body)
+  body = convert_quote(body)
   body = convert_images(body, basename)
   body = convert_definition(body)
   body = convert_footnote(body)
