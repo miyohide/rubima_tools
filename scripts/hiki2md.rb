@@ -49,8 +49,8 @@ end
 def convert_definition(body)
   body.map do |line|
     if line =~ /\A:([^:]+):(.+)\Z/
-      line.sub(/\A:([^:]+):(.+)\Z/, '<dl><dt>\1</dt><dd>\2</dd></dl>').
-      gsub(/\[(.+?)\]\(([^\)]+?)\)/, '<a href="\2">\1</a>')
+      line.sub(/\A:([^:]+):(.+)\Z/, '__\1__ \2' + "\n")
+#      gsub(/\[(.+?)\]\(([^\)]+?)\)/, '<a href="\2">\1</a>')
     else
       line
     end
