@@ -93,6 +93,22 @@ def convert_quote(body)
   end
 end
 
+def create_header(title, issue_num, basename)
+  tags = "#{issue_num}"
+
+  basename.match(/\d{4}\-([^\.]+).hiki/) do |md|
+    tags = "#{tags} #{md[1]}"
+  end
+
+  [ "---\n",
+    "layout: post\n",
+    "title: #{title}\n",
+    "short_title: #{title}\n",
+    "tags: #{tags}\n",
+    "---\n\n"
+  ]
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10",
   "0002" => "2004-10-16",
@@ -131,12 +147,7 @@ ARGV.each do |filename|
   end
 
   # Jekyll用のヘッダ
-  headers = [ "---\n",
-    "layout: post\n",
-    "title: #{first_line}\n",
-    "short_title: #{first_line}\n",
-    "tags: #{issue_num}\n",
-    "---\n\n"]
+  headers = create_header(first_line, issue_num, basename)
 
   body = lines.map { |line|
     line.sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
