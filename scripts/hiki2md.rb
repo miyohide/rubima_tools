@@ -89,7 +89,8 @@ end
 
 def convert_quote(body)
   body.map do |line|
-    line.sub(/^\"\"/) { '> ' }
+    line.sub(/\A\"\"#/) { '> \#'}.
+         sub(/\A\"\"/) { "> " }
   end
 end
 
