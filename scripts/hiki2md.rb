@@ -4,7 +4,7 @@ def convert_images(body, filename)
   image_dir = '{{site.baseurl}}/images/' + filename.sub("\.hiki", "") + '/'
 
   body.map do |line|
-    line.gsub(/\{\{attach_view\('(.+)'\)\}\}/) do
+    line.gsub(/\{\{attach_view\('([^\)]+)'\)\}\}/) do
       image_tag(image_dir, $1)
     end
   end
