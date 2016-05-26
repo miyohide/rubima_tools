@@ -158,7 +158,8 @@ ARGV.each do |filename|
   headers = create_header(first_line, issue_num, basename)
 
   body = lines.map { |line|
-    line.sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
+    line.sub(/^# /) { '1. ' }.
+    sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
     sub(/^(\*+)\s/) { ' '*($1.length - 1) + '- ' }.
     gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
   }
