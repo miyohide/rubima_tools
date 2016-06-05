@@ -1,3 +1,5 @@
 data/
 *.tar.gz
 attach/
+scripts/mysql2file.rb
+
