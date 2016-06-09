@@ -66,4 +66,11 @@ class TestHiki2Md < Minitest::Test
     actual = create_header("タイトル", "0012", "0012-hoge.hiki")
     assert_equal expect, actual
   end
+
+  def test_convert_italic
+    bodies = ['ほげ\'\'ここからイタリック\'\'ここは普通']
+    expect = ['ほげ _ここからイタリック_ ここは普通']
+
+    assert_equal expect, convert_italic(bodies)
+  end
 end

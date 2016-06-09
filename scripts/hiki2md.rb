@@ -111,6 +111,12 @@ def create_header(title, issue_num, basename)
   ]
 end
 
+def convert_italic(body)
+  body.map do |line|
+    line.gsub(/\'\'(.+)\'\'/) { ' _' + $1 + '_ ' }
+  end
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10", "0002" => "2004-10-16",
   "0003" => "2004-11-15", "0004" => "2004-12-17",
@@ -171,6 +177,7 @@ ARGV.each do |filename|
   body = convert_definition(body)
   body = convert_footnote(body)
   body = convert_table(body)
+  body = convert_italic(body)
   headers.concat(body)
 
   # Markdownファイルとして出力
