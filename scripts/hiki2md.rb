@@ -90,8 +90,28 @@ end
 def convert_quote(body)
   body.map do |line|
     line.sub(/\A\"\"#/) { '> \#'}.
-         sub(/\A\"\"/) { "> " }.
-         sub(/\A /) { "> " }
+         sub(/\A\"\"/) { "> " }
+  end
+end
+
+def convert_source(body)
+  source_start = false
+
+  body.map do |line|
+    if line =~ /\A /
+      line.sub!(/\A /, '')
+      unless source_start
+        source_start = true
+        line = "```ruby\n#{line}"
+      end
+      line
+    else
+      if source_start
+        source_start = false
+        line = "```\n#{line}"
+      end
+      line
+    end
   end
 end
 
