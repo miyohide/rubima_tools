@@ -48,10 +48,19 @@ class TestHiki2Md < Minitest::Test
   end
 
   def test_convert_quote
-    bodies = ['""#コメント行', '""通常行', '  これも通常行']
-    expect = ['> \#コメント行', '> 通常行', '>  これも通常行']
+    bodies = ['""#コメント行', '""通常行']
+    expect = ['> \#コメント行', '> 通常行']
 
     assert_equal expect, convert_quote(bodies)
+  end
+
+  def test_convert_source
+    bodies = [" puts 'Hello World'\n", " puts 'Hogehoge'\n", "\n", "あいう\n"]
+    expect = ["```ruby\nputs 'Hello World'\n", "puts 'Hogehoge'\n", "```\n\n", "あいう\n"]
+
+    result = convert_source(bodies)
+
+    assert_equal expect, result
   end
 
   def test_create_header
