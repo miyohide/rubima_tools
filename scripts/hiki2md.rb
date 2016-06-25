@@ -102,7 +102,7 @@ def convert_source(body)
       line.sub!(/\A /, '')
       unless source_start
         source_start = true
-        line = "```ruby\n#{line}"
+        line = "\n```ruby\n#{line}"
       end
       line
     else
@@ -193,6 +193,7 @@ ARGV.each do |filename|
 
   body = convert_link(body)
   body = convert_quote(body)
+  body = convert_source(body)
   body = convert_images(body, basename)
   body = convert_definition(body)
   body = convert_footnote(body)
