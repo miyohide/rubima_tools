@@ -31,9 +31,10 @@ class TestHiki2Md < Minitest::Test
     expect = ["__発言者__ 発言内容\n",
         "__発言者2__ 発言内容2\n",
         "あああ:いいい"]
-    actual = convert_definition(bodies)
 
-    assert_equal expect, actual
+    actuals = bodies.map { |body| convert_definition(body) }
+
+    assert_equal expect, actuals
   end
 
   def test_convert_link
@@ -42,16 +43,17 @@ class TestHiki2Md < Minitest::Test
     expect = ["[RWiki:逆引きRuby/Tk](http://pub.cozmixng.org/~the-rwiki/rw-cgi.rb?cmd=view;name=%B5%D5%B0%FA%A4%ADRuby%2FTk)",
               "[ruby-list:37857](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/37857)",
               "[RAA:qtruby](http://raa.ruby-lang.org/project/qtruby)", "[FOX](http://www.fox-toolkit.org/)"]
-    actual = convert_link(bodies)
 
-    assert_equal expect, actual
+    actuals = bodies.map { |body| convert_link(body) }
+
+    assert_equal expect, actuals
   end
 
   def test_convert_quote
     bodies = ['""#コメント行', '""通常行']
     expect = ['> \#コメント行', '> 通常行']
 
-    assert_equal expect, convert_quote(bodies)
+    assert_equal expect, bodies.map { |body| convert_quote(body) }
   end
 
   def test_convert_source
@@ -80,6 +82,6 @@ class TestHiki2Md < Minitest::Test
     bodies = ['ほげ\'\'ここからイタリック\'\'ここは普通']
     expect = ['ほげ _ここからイタリック_ ここは普通']
 
-    assert_equal expect, convert_italic(bodies)
+    assert_equal expect, bodies.map { |body| convert_italic(body) }
   end
 end

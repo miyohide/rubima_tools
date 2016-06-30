@@ -1,12 +1,10 @@
 require "uri"
 
-def convert_images(body, filename)
+def convert_images(line, filename)
   image_dir = '{{site.baseurl}}/images/' + filename.sub("\.hiki", "") + '/'
 
-  body.map do |line|
-    line.gsub(/\{\{attach_view\('([^\)]+)'\)\}\}/) do
-      image_tag(image_dir, $1)
-    end
+  line.gsub(/\{\{attach_view\('([^\)]+)'\)\}\}/) do
+    image_tag(image_dir, $1)
   end
 end
 
@@ -46,14 +44,12 @@ def footnote_body(counter, body)
   "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>"
 end
 
-def convert_definition(body)
-  body.map do |line|
-    if line =~ /\A:([^:]+):(.+)\Z/
-      line.sub(/\A:([^:]+):(.+)\Z/, '__\1__ \2' + "\n")
+def convert_definition(line)
+  if line =~ /\A:([^:]+):(.+)\Z/
+    line.sub(/\A:([^:]+):(.+)\Z/, '__\1__ \2' + "\n")
 #      gsub(/\[(.+?)\]\(([^\)]+?)\)/, '<a href="\2">\1</a>')
-    else
-      line
-    end
+  else
+    line
   end
 end
 
@@ -77,21 +73,17 @@ def convert_table(body)
   end
 end
 
-def convert_link(body)
-  body.map do |line|
-    # RAA対応
-    line.gsub(/\[\[RAA:([^\]]+)\]\]/) { '[RAA:' + $1 + '](http://raa.ruby-lang.org/project/' + $1 + ')'}.
+def convert_link(line)
+  # RAA対応
+  line.gsub(/\[\[RAA:([^\]]+)\]\]/) { '[RAA:' + $1 + '](http://raa.ruby-lang.org/project/' + $1 + ')'}.
     gsub(/\[\[ruby\-list:(\d+)\]\]/) {'[ruby-list:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/' + $1 + ')'}.
     gsub(/\[\[RWiki:([^\]]+)\]\]/) { '[RWiki:' + $1 + '](http://pub.cozmixng.org/~the-rwiki/rw-cgi.rb?cmd=view;name=' + URI.encode_www_form_component($1.encode("EUC-JP")) + ')' }.
     gsub(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
-  end
 end
 
-def convert_quote(body)
-  body.map do |line|
-    line.sub(/\A\"\"#/) { '> \#'}.
-         sub(/\A\"\"/) { "> " }
-  end
+def convert_quote(line)
+  line.sub(/\A\"\"#/) { '> \#'}.
+        sub(/\A\"\"/) { "> " }
 end
 
 def convert_source(body)
@@ -131,10 +123,25 @@ def create_header(title, issue_num, basename)
   ]
 end
 
-def convert_italic(body)
-  body.map do |line|
-    line.gsub(/\'\'(.+)\'\'/) { ' _' + $1 + '_ ' }
-  end
+def convert_italic(line)
+  line.gsub(/\'\'(.+)\'\'/) { ' _' + $1 + '_ ' }
+end
+
+def convert_section(line)
+  ## イレギュラー対応。タイトルをh1にする
+  line.sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }
+end
+
+def convert_unordered_list(line)
+  line.sub(/^(\*+)\s/) { ' '*($1.length - 1) + '- ' }
+end
+
+def convert_ordered_list(line)
+  line.sub(/^# /) { '1. ' }
+end
+
+def convert_strong(line)
+  gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
 end
 
 ISSUE_DATE = {
@@ -185,10 +192,10 @@ ARGV.each do |filename|
   headers = create_header(first_line, issue_num, basename)
 
   body = lines.map { |line|
-    line.sub(/^# /) { '1. ' }.
-    sub(/^(\!+)/) { '#'*($1.length + 1) + ' ' }.  ## イレギュラー対応。タイトルをh1にする
-    sub(/^(\*+)\s/) { ' '*($1.length - 1) + '- ' }.
-    gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
+    convert_ordered_list(line).
+    convert_section(line).
+    convert_unordered_list(line).
+    convert_strong(line)
   }
 
   body = convert_link(body)
