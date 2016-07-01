@@ -58,7 +58,7 @@ class TestHiki2Md < Minitest::Test
 
   def test_convert_source
     bodies = [" puts 'Hello World'\n", " puts 'Hogehoge'\n", "\n", "あいう\n"]
-    expect = ["```ruby\nputs 'Hello World'\n", "puts 'Hogehoge'\n", "```\n\n", "あいう\n"]
+    expect = ["\n```ruby\nputs 'Hello World'\n", "puts 'Hogehoge'\n", "```\n\n", "あいう\n"]
 
     result = convert_source(bodies)
 
