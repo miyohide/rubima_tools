@@ -141,7 +141,8 @@ def convert_ordered_list(line)
 end
 
 def convert_strong(line)
-  gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
+  line.gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
+end
 end
 
 ISSUE_DATE = {
@@ -192,20 +193,21 @@ ARGV.each do |filename|
   headers = create_header(first_line, issue_num, basename)
 
   body = lines.map { |line|
-    convert_ordered_list(line).
-    convert_section(line).
-    convert_unordered_list(line).
-    convert_strong(line)
+    line = convert_ordered_list(line)
+    line = convert_section(line)
+    line = convert_unordered_list(line)
+    line = convert_strong(line)
+    line = convert_link(line)
+    line = convert_quote(line)
+    line = convert_images(line, basename)
+    line = convert_definition(line)
+    line = convert_italic(line)
+    line = convert_isbn_image(line)
   }
 
-  body = convert_link(body)
-  body = convert_quote(body)
   body = convert_source(body)
-  body = convert_images(body, basename)
-  body = convert_definition(body)
   body = convert_footnote(body)
   body = convert_table(body)
-  body = convert_italic(body)
   headers.concat(body)
 
   # Markdownファイルとして出力
