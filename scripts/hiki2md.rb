@@ -143,6 +143,9 @@ end
 def convert_strong(line)
   line.gsub(/'''([^']+)'''/) { '***' + $1 + '***' }
 end
+
+def convert_isbn_image(line)
+  line.gsub(/\{\{isbn_image_([^\}]+)\}\}/) { '{% isbn_image_' + $1 + ' %}'}
 end
 
 ISSUE_DATE = {
