@@ -84,4 +84,16 @@ class TestHiki2Md < Minitest::Test
 
     assert_equal expect, bodies.map { |body| convert_italic(body) }
   end
+
+  def test_include_toc1
+    bodies = ["あああ\n", "いいい{{toc_here}}\n", "ううう\n"]
+
+    assert_equal true, include_toc?(bodies)
+  end
+
+  def test_include_toc2
+    bodies = ["あああ\n", "いいい\n", "ううう\n"]
+
+    assert_equal false, include_toc?(bodies)
+  end
 end

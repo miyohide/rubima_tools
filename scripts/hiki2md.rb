@@ -148,6 +148,10 @@ def convert_isbn_image(line)
   line.gsub(/\{\{isbn_image_([^\}]+)\}\}/) { '{% isbn_image_' + $1 + ' %}'}
 end
 
+def include_toc?(body)
+  body.grep(/\{\{toc_here\}\}/).length > 0
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10", "0002" => "2004-10-16",
   "0003" => "2004-11-15", "0004" => "2004-12-17",
