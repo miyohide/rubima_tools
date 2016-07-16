@@ -107,20 +107,23 @@ def convert_source(body)
   end
 end
 
-def create_header(title, issue_num, basename)
+def create_header(title, issue_num, basename, bodies)
   tags = "#{issue_num}"
 
   basename.match(/\d{4}\-([^\.]+).hiki/) do |md|
     tags = "#{tags} #{md[1]}"
   end
 
-  [ "---\n",
-    "layout: post\n",
-    "title: #{title}\n",
-    "short_title: #{title}\n",
-    "tags: #{tags}\n",
-    "---\n\n"
-  ]
+  header =
+    [ "---\n",
+      "layout: post\n",
+      "title: #{title}\n",
+      "short_title: #{title}\n",
+      "tags: #{tags}\n"
+    ]
+
+  header << "noToc: true\n" unless include_toc?(bodies)
+  header << "---\n\n"
 end
 
 def convert_italic(line)
@@ -197,7 +200,7 @@ ARGV.each do |filename|
   end
 
   # Jekyll用のヘッダ
-  headers = create_header(first_line, issue_num, basename)
+  headers = create_header(first_line, issue_num, basename, lines)
 
   body = lines.map { |line|
     line = convert_ordered_list(line)
