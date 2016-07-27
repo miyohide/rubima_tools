@@ -41,7 +41,7 @@ def footnote_link(counter)
 end
 
 def footnote_body(counter, body)
-  "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>"
+  "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
 end
 
 def convert_definition(line)
