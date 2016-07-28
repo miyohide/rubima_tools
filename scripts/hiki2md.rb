@@ -155,6 +155,14 @@ def include_toc?(body)
   body.grep(/\{\{toc_here\}\}/).length > 0
 end
 
+def convert_backnumber(line)
+  line.sub(/\{\{backnumber\('(.+)'\)\}\}/) {
+    "\n{% for post in site.tags." + $1 + "%}\n" +
+    "  - [{{ post.title }}]({{ post.url }})\n" +
+    "{% endfor %}\n"
+  }
+end
+
 ISSUE_DATE = {
   "0001" => "2004-09-10", "0002" => "2004-10-16",
   "0003" => "2004-11-15", "0004" => "2004-12-17",
