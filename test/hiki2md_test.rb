@@ -22,7 +22,7 @@ class TestHiki2Md < Minitest::Test
 
   def test_footnote_body
     actual = footnote_body(13, "body1")
-    expect = "<li id='fn13'><p>body1<a href='#fnref13' rev='footnote'>←</a></p></li>"
+    expect = "<li id='fn13'><p>body1<a href='#fnref13' rev='footnote'>←</a></p></li>\n"
     assert_equal expect, actual
   end
 
@@ -66,6 +66,8 @@ class TestHiki2Md < Minitest::Test
   end
 
   def test_create_header
+    bodies = ['""#コメント行', '{{toc_here}}'  ,'""通常行']
+
     expect = [
       "---\n",
       "layout: post\n",
@@ -74,7 +76,7 @@ class TestHiki2Md < Minitest::Test
       "tags: 0012 hoge\n",
       "---\n\n"
     ]
-    actual = create_header("タイトル", "0012", "0012-hoge.hiki")
+    actual = create_header("タイトル", "0012", "0012-hoge.hiki", bodies)
     assert_equal expect, actual
   end
 
