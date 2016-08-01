@@ -3,7 +3,7 @@ require_relative '../scripts/converter'
 
 class TestConverter < Minitest::Test
   def test_convert_line_ordered_list
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["# aaa", "# bbb", "ccc"]) do
       converter.convert_line
@@ -12,7 +12,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_section
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["!aaa", "!bbb"]) do
       converter.convert_line
@@ -21,7 +21,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_unordered_list
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["* aaa", "* bbb"]) do
       converter.convert_line
@@ -30,7 +30,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_strong
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["hoge", "'''aaaaa'''"]) do
       converter.convert_line
@@ -39,7 +39,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_link
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     input_data = [
                   "[[RAA:hoge]]",
@@ -62,8 +62,21 @@ class TestConverter < Minitest::Test
     end
   end
 
+  def test_convert_line_image
+    converter = Converter.new("dummy.hiki")
+
+    converter.stub(:lines,["hoge", "{{attach_view('logo2.png')}}"]) do
+      converter.convert_line
+      assert_equal(
+        [
+          "hoge",
+          "<img src='{{site.baseurl}}/images/dummy/logo2.png' alt='logo2.png'></img>"
+        ], converter.lines)
+    end
+  end
+
   def test_convert_line_definition
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["hoge", ":aaaaa: bbbb"]) do
       converter.convert_line
@@ -72,7 +85,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_italic
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["hoge", "''aaa''"]) do
       converter.convert_line
@@ -81,7 +94,7 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_line_isbn_image
-    converter = Converter.new("dummy.txt")
+    converter = Converter.new("dummy.hiki")
 
     converter.stub(:lines,["hoge", "{{isbn_image_hoge}}"]) do
       converter.convert_line
