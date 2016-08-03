@@ -102,4 +102,33 @@ class TestConverter < Minitest::Test
     end
   end
 
+  def test_convert_source
+    converter = Converter.new("dummy.hiki")
+    bodies = [" puts 'Hello World'\n", " puts 'Hogehoge'\n", "\n", "あいう\n"]
+    expect = ["\n```ruby\nputs 'Hello World'\n", "puts 'Hogehoge'\n", "```\n\n", "あいう\n"]
+
+    converter.stub(:lines, bodies) do
+      converter.convert_body
+      assert_equal(expect, converter.lines)
+    end
+  end
+
+  def test_convert_footnote
+    converter = Converter.new("dummy.hiki")
+    bodies = ["ほげ{{fn('aaa')}}", "bbb", "ccc"]
+    expect = ["ほげ<sup id='fnref1'><a href='#fn1' rel='footnote'>1</a></sup>",
+              "bbb", "ccc",
+              "<div =class'footnotes'><ol>",
+              "<li id='fn1'><p>aaa<a href='#fnref1' rev='footnote'>←</a></p></li>\n",
+              "</ol></div>"]
+
+    converter.stub(:lines, bodies) do
+      converter.convert_body
+      assert_equal(expect, converter.lines)
+    end
+  end
+
+  def test_convert_table
+  end
+
 end
