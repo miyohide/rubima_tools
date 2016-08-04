@@ -129,6 +129,19 @@ class TestConverter < Minitest::Test
   end
 
   def test_convert_table
+    converter = Converter.new("dummy.hiki")
+    bodies = ["||Win32||X11||MacOSX||MacOSClassic", "|| ○ || ○|| ○ || ○ "]
+    expect = ["\n|Win32|X11|MacOSX|MacOSClassic|\n|---|---|---|---|\n",
+              "| ○ | ○| ○ | ○ |\n"]
+
+    converter.stub(:lines, bodies) do
+      converter.convert_body
+      assert_equal(expect, converter.lines)
+    end
   end
+
+
+
+
 
 end
