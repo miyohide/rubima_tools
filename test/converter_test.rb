@@ -102,6 +102,15 @@ class TestConverter < Minitest::Test
     end
   end
 
+  def test_convert_line_backnumber
+    converter = Converter.new("dummy.hiki")
+
+    converter.stub(:lines,["hoge", "{{backnumber('abc')}}"]) do
+      converter.convert_line
+      assert_equal(["hoge", "\n{% for post in site.tags.abc%}\n  - [{{ post.title }}]({{ post.url }})\n{% endfor %}\n"], converter.lines)
+    end
+  end
+
   def test_convert_source
     converter = Converter.new("dummy.hiki")
     bodies = [" puts 'Hello World'\n", " puts 'Hogehoge'\n", "\n", "あいう\n"]
