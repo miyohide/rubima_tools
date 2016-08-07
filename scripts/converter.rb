@@ -22,10 +22,14 @@ class Converter
       convert_definition(line)
       convert_italic(line)
       convert_isbn_image(line)
+      convert_backnumber(line)
     end
   end
 
   def convert_body
+    convert_source(lines)
+    convert_footnote(lines)
+    convert_table(lines)
   end
 
   def convert_ordered_list(line)
@@ -77,6 +81,76 @@ class Converter
     line.gsub!(/\{\{isbn_image_([^\}]+)\}\}/) { '{% isbn_image_' + $1 + ' %}'}
   end
 
+  def convert_backnumber(line)
+    line.sub!(/\{\{backnumber\('(.+)'\)\}\}/) {
+      "\n{% for post in site.tags." + $1 + "%}\n" +
+      "  - [{{ post.title }}]({{ post.url }})\n" +
+      "{% endfor %}\n"
+    }
+  end
+
+  def convert_source(body)
+    source_start = false
+
+    body.map! do |line|
+      if line =~ /\A /
+        line.sub!(/\A /, '')
+        unless source_start
+          source_start = true
+          line = "\n```ruby\n#{line}"
+        end
+        line
+      else
+        if source_start
+          source_start = false
+          line = "```\n#{line}"
+        end
+        line
+      end
+    end
+  end
+
+  def convert_footnote(body)
+    footnote_counter = 0
+    footnotes = []
+
+    body.map! do |line|
+      line.gsub(/{{fn\(\'(.+?)\'\)}}/) do
+        footnote_counter += 1
+        footnotes << footnote_body(footnote_counter, $1)
+        "#{footnote_link(footnote_counter)}"
+      end
+    end
+
+    if footnote_counter > 0
+      footnotes.unshift "<div =class'footnotes'><ol>"
+      footnotes.push "</ol></div>"
+      body.concat(footnotes)
+    end
+
+    body
+  end
+
+  def convert_table(body)
+    table_start = false
+
+    body.map! do |line|
+      if line =~ /\A\|\|/
+        line = line.chomp + "|\n"
+        col_num = line.scan(/\|\|([^\|]+)/).size
+        line.gsub!(/\|\|/, '|')
+        unless table_start
+          table_start = true
+          line = "\n" + line + "|---" * col_num + "|\n"
+        end
+        line
+      else
+        table_start = false
+        line
+      end
+    end
+  end
+
   private
 
   def file_read
@@ -109,6 +183,14 @@ class Converter
     else
       "<img src='#{image_dir_name}#{image_file_name}' alt='#{image_file_name}'></img>"
     end
+  end
+
+  def footnote_link(counter)
+    "<sup id='fnref#{counter}'><a href='\#fn#{counter}' rel='footnote'>#{counter}</a></sup>"
+  end
+
+  def footnote_body(counter, body)
+    "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
   end
 
 end
