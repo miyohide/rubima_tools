@@ -62,6 +62,24 @@ class TestConverter < Minitest::Test
     end
   end
 
+  def test_convert_quote
+    converter = Converter.new("dummy.hiki")
+
+    input_data = [
+                  "\"\"aaa",
+                ]
+
+    converter.stub(:lines, input_data) do
+      converter.convert_line
+
+      expected_data = [
+        "> aaa",
+      ]
+
+      assert_equal(expected_data, converter.lines)
+    end
+  end
+
   def test_convert_line_image
     converter = Converter.new("dummy.hiki")
 
