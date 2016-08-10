@@ -66,6 +66,7 @@ class TestConverter < Minitest::Test
     converter = Converter.new("dummy.hiki")
 
     input_data = [
+                  "\"\"#ほげ",
                   "\"\"aaa",
                 ]
 
@@ -73,6 +74,7 @@ class TestConverter < Minitest::Test
       converter.convert_line
 
       expected_data = [
+        "> \\#ほげ",
         "> aaa",
       ]
 
