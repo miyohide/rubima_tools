@@ -57,7 +57,8 @@ class Converter
   end
 
   def convert_quote(line)
-    convert_normal_link(line)
+    convert_markdown_in_quote(line)
+    convert_normal_quote(line)
     #line.sub!(/\A\"\"#/) { '> \#'}.
   end
 
@@ -171,6 +172,10 @@ class Converter
 
   def convert_normal_link(line)
     line.gsub!(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
+  end
+
+  def convert_markdown_in_quote(line)
+    line.sub!(/\A\"\"#/) { '> \#'}
   end
 
   def convert_normal_quote(line)
