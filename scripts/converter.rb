@@ -59,7 +59,6 @@ class Converter
   def convert_quote(line)
     convert_markdown_in_quote(line)
     convert_normal_quote(line)
-    #line.sub!(/\A\"\"#/) { '> \#'}.
   end
 
   def convert_images(line)
