@@ -169,8 +169,4 @@ class TestConverter < Minitest::Test
     end
   end
 
-
-
-
-
 end
