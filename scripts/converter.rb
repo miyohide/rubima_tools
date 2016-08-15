@@ -6,6 +6,8 @@ class Converter
   def initialize(filename)
     @filename = filename
     @lines = []
+    @title = nil
+    @issue_num = nil
   end
 
   def convert_line
@@ -30,6 +32,25 @@ class Converter
     convert_source(lines)
     convert_footnote(lines)
     convert_table(lines)
+  end
+
+  def create_header(title, issue_num, basename)
+    tags = "#{issue_num}"
+
+    basename.match(/\d{4}\-([^\.]+).hiki/) do |md|
+      tags = "#{tags} #{md[1]}"
+    end
+
+    header =
+      [ "---\n",
+        "layout: post\n",
+        "title: #{title}\n",
+        "short_title: #{title}\n",
+        "tags: #{tags}\n"
+      ]
+
+    header << "noToc: true\n" unless include_toc?(lines)
+    header << "---\n\n"
   end
 
   def convert_ordered_list(line)
@@ -155,6 +176,8 @@ class Converter
 
   def file_read
     @lines = File.readlines(@filename)
+    @title = @lines.shift.chomp
+    @issue_num = File.basename(@filename)[0..4]
   end
 
   def convert_raa_link(line)
@@ -197,4 +220,7 @@ class Converter
     "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
   end
 
+  def include_toc?(body)
+    body.grep(/\{\{toc_here\}\}/).length > 0
+  end
 end
