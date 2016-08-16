@@ -169,4 +169,25 @@ class TestConverter < Minitest::Test
     end
   end
 
+  def test_create_header
+    converter = Converter.new("0123-hoge.hiki")
+
+    expected_header = [ "---\n",
+      "layout: post\n",
+      "title: aaa\n",
+      "short_title: aaa\n",
+      "tags: 0123 hoge\n",
+      "noToc: true\n",
+      "---\n",
+      "\n\n"
+    ]
+
+    bodies = ["aaa", "bbb", "ccc"]
+    expect = expected_header.concat(bodies)
+    converter.stub(:lines, bodies) do
+      converter.create_header
+      assert_equal(expect, converter.lines)
+    end
+  end
+
 end
