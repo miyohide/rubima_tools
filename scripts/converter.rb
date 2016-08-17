@@ -1,13 +1,47 @@
 require "uri"
 
 class Converter
+
+  ISSUE_DATE = {
+    "0001" => "2004-09-10", "0002" => "2004-10-16",
+    "0003" => "2004-11-15", "0004" => "2004-12-17",
+    "0005" => "2005-02-15", "0006" => "2005-05-09",
+    "0007" => "2005-06-19", "0008" => "2005-07-19",
+    "0009" => "2005-09-06", "0010" => "2005-10-10",
+    "0011" => "2005-11-16", "0012" => "2005-12-23",
+    "0013" => "2006-02-20", "0014" => "2006-05-15",
+    "0015" => "2006-07-13", "0016" => "2006-09-20",
+    "0017" => "2006-11-26", "0018" => "2007-02-28",
+    "0019" => "2007-05-18", "0020" => "2007-08-15",
+    "0021" => "2007-09-29", "0022" => "2007-12-17",
+    "0023" => "2008-03-31", "0024" => "2008-10-01",
+    "0025" => "2009-02-07", "0026" => "2009-06-30",
+    "0027" => "2009-09-13", "0028" => "2009-12-07",
+    "0029" => "2010-03-16", "0030" => "2010-06-15",
+    "0031" => "2010-10-07", "0032" => "2011-01-31",
+    "0033" => "2011-04-05", "0034" => "2011-06-12",
+    "0035" => "2011-09-26", "0036" => "2011-11-28",
+    "0037" => "2012-02-05", "0038" => "2012-05-22",
+    "0039" => "2012-09-05", "0040" => "2012-11-25",
+    "0041" => "2013-02-24", "0042" => "2013-05-29",
+    "0043" => "2013-07-31", "0044" => "2013-09-30",
+    "0045" => "2013-12-21", "0046" => "2014-04-05",
+    "0047" => "2014-06-30", "0048" => "2014-09-19",
+    "0049" => "2014-12-14", "0050" => "2015-05-10",
+    "0051" => "2015-09-06", "0052" => "2015-12-06"
+  }
+
   attr_accessor :filename, :lines
 
   def initialize(filename)
     @filename = filename
     @lines = []
     @title = nil
-    @issue_num = nil
+    @basename = File.basename(@filename)
+    @issue_num = @basename[0, 4]
+    if @basename == "#{@issue_num}.hiki"
+      @basename = "#{@issue_num}-index.hiki"
+    end
   end
 
   def convert_line
@@ -29,28 +63,41 @@ class Converter
   end
 
   def convert_body
+    file_read if lines.size == 0
+
     convert_source(lines)
     convert_footnote(lines)
     convert_table(lines)
   end
 
-  def create_header(title, issue_num, basename)
-    tags = "#{issue_num}"
+  def create_header
+    file_read if lines.size == 0
 
-    basename.match(/\d{4}\-([^\.]+).hiki/) do |md|
+    tags = "#{@issue_num}"
+
+    @basename.match(/\d{4}\-([^\.]+).hiki/) do |md|
       tags = "#{tags} #{md[1]}"
     end
 
     header =
       [ "---\n",
         "layout: post\n",
-        "title: #{title}\n",
-        "short_title: #{title}\n",
+        "title: #{@title}\n",
+        "short_title: #{@title}\n",
         "tags: #{tags}\n"
       ]
 
     header << "noToc: true\n" unless include_toc?(lines)
     header << "---\n\n"
+    lines.unshift(*header)
+  end
+
+  def output_file
+    dirname = File.dirname(@filename)
+    basename = File.basename(@filename)
+
+    output_filename = File.join(dirname, ISSUE_DATE[@issue_num] + "-" + basename.sub(/\.hiki$/, '.md'))
+    open(output_filename, 'w') { |f| f.write(lines.join) }
   end
 
   def convert_ordered_list(line)
@@ -177,7 +224,6 @@ class Converter
   def file_read
     @lines = File.readlines(@filename)
     @title = @lines.shift.chomp
-    @issue_num = File.basename(@filename)[0..4]
   end
 
   def convert_raa_link(line)

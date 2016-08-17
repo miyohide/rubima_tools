@@ -174,12 +174,11 @@ class TestConverter < Minitest::Test
 
     expected_header = [ "---\n",
       "layout: post\n",
-      "title: aaa\n",
-      "short_title: aaa\n",
+      "title: \n",
+      "short_title: \n",
       "tags: 0123 hoge\n",
       "noToc: true\n",
-      "---\n",
-      "\n\n"
+      "---\n\n"
     ]
 
     bodies = ["aaa", "bbb", "ccc"]
