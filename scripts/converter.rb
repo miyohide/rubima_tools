@@ -94,9 +94,8 @@ class Converter
 
   def output_file
     dirname = File.dirname(@filename)
-    basename = File.basename(@filename)
 
-    output_filename = File.join(dirname, ISSUE_DATE[@issue_num] + "-" + basename.sub(/\.hiki$/, '.md'))
+    output_filename = File.join(dirname, ISSUE_DATE[@issue_num] + "-" + @basename.sub(/\.hiki$/, '.md'))
     open(output_filename, 'w') { |f| f.write(lines.join) }
   end
 
