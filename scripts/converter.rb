@@ -129,7 +129,7 @@ class Converter
   end
 
   def convert_images(line)
-    image_dir = '{{site.baseurl}}/images/' + @filename.sub("\.hiki", "") + '/'
+    image_dir = '{{site.baseurl}}/images/' + @basename.sub("\.hiki", "") + '/'
 
     line.gsub!(/\{\{attach_view\('([^\)]+)'\)\}\}/) do
       image_tag(image_dir, $1)
