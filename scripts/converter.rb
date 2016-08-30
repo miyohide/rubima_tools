@@ -160,7 +160,7 @@ class Converter
     source_start = false
 
     body.map! do |line|
-      if line =~ /\A /
+      if line.chomp =~ /\A\s\s[^-].+\z/
         line.sub!(/\A /, '')
         unless source_start
           source_start = true
