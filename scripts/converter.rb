@@ -84,11 +84,9 @@ class Converter
         "layout: post\n",
         "title: #{@title}\n",
         "short_title: #{@title}\n",
-        "tags: #{tags}\n"
+        "tags: #{tags}\n",
+        "---\n\n"
       ]
-
-    header << "noToc: true\n" unless include_toc?(lines)
-    header << "---\n\n"
     lines.unshift(*header)
   end
 
@@ -113,7 +111,7 @@ class Converter
   end
 
   def convert_strong(line)
-    line.gsub!(/'''([^']+)'''/) { '***' + $1 + '***' }
+    line.gsub!(/'''([^']+)'''/) { '**' + $1 + '**' }
   end
 
   def convert_link(line)
@@ -190,7 +188,7 @@ class Converter
     end
 
     if footnote_counter > 0
-      footnotes.unshift "<div =class'footnotes'><ol>"
+      footnotes.unshift "<div class='footnotes'><ol>"
       footnotes.push "</ol></div>"
       body.concat(footnotes)
     end
@@ -258,14 +256,12 @@ class Converter
   end
 
   def footnote_link(counter)
-    "<sup id='fnref#{counter}'><a href='\#fn#{counter}' rel='footnote'>#{counter}</a></sup>"
+    "[^#{counter}]"
+    # "<sup id='fnref#{counter}'><a href='\#fn#{counter}' rel='footnote'>#{counter}</a></sup>"
   end
 
   def footnote_body(counter, body)
-    "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
-  end
-
-  def include_toc?(body)
-    body.grep(/\{\{toc_here\}\}/).length > 0
+    "[^#{counter}]: #{body}"
+    # "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
   end
 end
