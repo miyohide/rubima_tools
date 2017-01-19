@@ -117,6 +117,9 @@ class Converter
   def convert_link(line)
     convert_raa_link(line)
     convert_rubylist_link(line)
+    convert_rubydev_link(line)
+    convert_rubytalk_link(line)
+    convert_rubycore_link(line)
     convert_rwiki_link(line)
     convert_normal_link(line)
   end
@@ -229,6 +232,18 @@ class Converter
 
   def convert_rubylist_link(line)
     line.gsub!(/\[\[ruby\-list:(\d+)\]\]/) {'[ruby-list:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/' + $1 + ')'}
+  end
+
+  def convert_rubytalk_link(line)
+    line.gsub!(/\[\[ruby-talk:(\d+)\]\]/) { '[ruby-talk:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/' + $1 + ')' }
+  end
+
+  def convert_rubycore_link(line)
+    line.gsub!(/\[\[ruby-core:(\d+)\]\]/) { '[ruby-core:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-core/' + $1 + ')' }
+  end
+
+  def convert_rubydev_link(line)
+    line.gsub!(/\[\[ruby-dev:(\d+)\]\]/) { '[ruby-dev:' + $1 + '](http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-dev/' + $1 + ')' }
   end
 
   def convert_rwiki_link(line)
