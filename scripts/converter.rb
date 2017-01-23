@@ -65,7 +65,7 @@ class Converter
   def convert_body
     file_read if lines.size == 0
 
-    convert_source(lines)
+    # convert_source(lines)
     convert_footnote(lines)
     convert_table(lines)
   end
