@@ -191,8 +191,6 @@ class Converter
     end
 
     if footnote_counter > 0
-      footnotes.unshift "<div class='footnotes'><ol>"
-      footnotes.push "</ol></div>"
       body.concat(footnotes)
     end
 
@@ -276,7 +274,7 @@ class Converter
   end
 
   def footnote_body(counter, body)
-    "[^#{counter}]: #{body}"
+    "[^#{counter}]: #{body}\n"
     # "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
   end
 end
