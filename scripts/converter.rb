@@ -138,7 +138,7 @@ class Converter
   end
 
   def convert_definition(line)
-    line.sub!(/\A:([^:]+):(.+)\Z/, '__\1__ \2' + "\n")
+    line.sub!(/\A:([^:]+):(.+)\Z/, '\1' + "\n: " + '\2' + "\n")
   end
 
   def convert_italic(line)
@@ -262,9 +262,9 @@ class Converter
 
   def image_tag(image_dir_name, image_file_name)
     if image_file_name =~ /u26\.gif/
-      "<img src='{{site.baseurl}}/images/title_mark.gif' alt='title mark'></img>"
+      "<img src='{{site.baseurl}}/images/title_mark.gif' alt='title mark'>"
     else
-      "<img src='#{image_dir_name}#{image_file_name}' alt='#{image_file_name}'></img>"
+      "<img src='#{image_dir_name}#{image_file_name}' alt='#{image_file_name}'>"
     end
   end
 
