@@ -58,6 +58,7 @@ class Converter
       convert_definition(line)
       convert_italic(line)
       convert_isbn_image(line)
+      convert_isbn(line)
       convert_backnumber(line)
     end
   end
@@ -147,6 +148,10 @@ class Converter
 
   def convert_isbn_image(line)
     line.gsub!(/\{\{isbn_image_([^\}]+)\}\}/) { '{% isbn_image_' + $1 + ' %}'}
+  end
+
+  def convert_isbn(line)
+    line.gsub!(/\{\{isbn\('([^']+)', *'([^']+)'\)\}\}/) { '{% isbn(\'' + isbn10to13($1) + '\',\'' + $2 + '\') %}'}
   end
 
   def convert_backnumber(line)
@@ -276,5 +281,13 @@ class Converter
   def footnote_body(counter, body)
     "[^#{counter}]: #{body}\n"
     # "<li id='fn#{counter}'><p>#{body}<a href='\#fnref#{counter}' rev='footnote'>←</a></p></li>\n"
+  end
+
+  def isbn10to13(isbn10)
+    isbn = "978" + isbn10.gsub(/\d$/,'')
+        r = isbn.split(//).map(&:to_i).zip([1,3].cycle).map{|e|
+      e[0] * e[1]
+    }.reduce(:+) % 10
+    isbn + ((10 - r) % 10).to_s
   end
 end
