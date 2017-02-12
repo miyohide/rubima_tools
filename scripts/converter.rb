@@ -156,7 +156,7 @@ class Converter
 
   def convert_backnumber(line)
     line.sub!(/\{\{backnumber\('(.+)'\)\}\}/) {
-      "\n{% for post in site.tags." + $1 + "%}\n" +
+      "\n{% for post in site.tags." + $1 + " %}\n" +
       "  - [{{ post.title }}]({{ post.url }})\n" +
       "{% endfor %}\n"
     }
