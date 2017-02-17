@@ -61,6 +61,7 @@ class Converter
       convert_isbn(line)
       convert_backnumber(line)
       convert_toc_here(line)
+      convert_firststep(line)
     end
   end
 
@@ -165,6 +166,10 @@ class Converter
 
   def convert_toc_here(line)
     line.sub!(/\{\{toc_here\}\}/) { "* Table of content\n{:toc}\n" }
+  end
+
+  def convert_firststep(line)
+    line.sub!(/\[\[FirstStepRuby\]\]/) { "[Ruby の歩き方]({% post_url 2000-01-01-0000-FirstStepRuby %})" }
   end
 
   def convert_source(body)
