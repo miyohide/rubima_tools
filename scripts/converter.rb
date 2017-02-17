@@ -193,7 +193,7 @@ class Converter
     footnotes = []
 
     body.map! do |line|
-      line.gsub(/{{fn\(\'(.+?)\'\)}}/) do
+      line.gsub(/{{fn\(['"](.+?)['"]\)}}/) do
         footnote_counter += 1
         footnotes << footnote_body(footnote_counter, $1)
         "#{footnote_link(footnote_counter)}"
