@@ -60,6 +60,7 @@ class Converter
       convert_isbn_image(line)
       convert_isbn(line)
       convert_backnumber(line)
+      convert_toc_here(line)
     end
   end
 
@@ -160,6 +161,10 @@ class Converter
       "  - [{{ post.title }}]({{ post.url }})\n" +
       "{% endfor %}\n"
     }
+  end
+
+  def convert_toc_here(line)
+    line.sub!(/\{\{toc_here\}\}/) { "* Table of content\n{:toc}\n" }
   end
 
   def convert_source(body)
