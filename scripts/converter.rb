@@ -125,6 +125,7 @@ class Converter
     convert_rubycore_link(line)
     convert_rwiki_link(line)
     convert_normal_link(line)
+    convert_article_link(line)
   end
 
   def convert_quote(line)
@@ -265,6 +266,10 @@ class Converter
 
   def convert_normal_link(line)
     line.gsub!(/\[\[([^|\]]+)\|([^\]]+)\]\]/) { '[' + $1 + '](' + $2 + ')' }
+  end
+
+  def convert_article_link(line)
+    line.gsub!(/\[\[(00\d\d)-([^\]]+)\]\]/) { "{% post_link #{ISSUE_DATE[$1]}-" + $1 + '-' + $2 + ' %}' }
   end
 
   def convert_markdown_in_quote(line)
